@@ -104,7 +104,28 @@ function addWord() {
 function editWord(index) {
     const newWord = prompt('Edit word:', wordBank[index]);
     if (newWord) {
-        wordBank.splice(index, 1);
+        const trimmedWord = newWord.trim().toUpperCase();
+        
+        // Validate not empty
+        if (!trimmedWord) {
+            alert('Word cannot be empty!');
+            return;
+        }
+        
+        // Validate only letters
+        if (!/^[A-Z]+$/.test(trimmedWord)) {
+            alert('Word must contain only letters!');
+            return;
+        }
+        
+        // Validate no duplicates (unless same word)
+        if (wordBank.includes(trimmedWord) && trimmedWord !== wordBank[index]) {
+            alert('This word already exists!');
+            return;
+        }
+        
+        // Replace word instead of deleting
+        wordBank[index] = trimmedWord;
         saveWordBank();
         displayWordBank();
     }
