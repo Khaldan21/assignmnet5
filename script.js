@@ -14,7 +14,8 @@ let gameState = {
     wrongGuesses: 0,
     maxWrong: 6,
     gameActive: false,
-    usedWords: []
+    usedWords: [],
+    difficulty: 'easy' // Default difficulty
 };
 
 let wordBank = [];
@@ -23,6 +24,17 @@ document.addEventListener('DOMContentLoaded', function() {
     loadWordBank();
     generateKeyboard();
 });
+
+function setDifficulty(level) {
+    gameState.difficulty = level;
+    gameState.maxWrong = difficultySettings[level].lives;
+    
+    // Update UI to show selected difficulty
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-difficulty="${level}"]`).classList.add('active');
+}
 
 function toggleTheme() {
     const themeIcon = document.querySelector('.theme-icon');
@@ -104,7 +116,28 @@ function addWord() {
 function editWord(index) {
     const newWord = prompt('Edit word:', wordBank[index]);
     if (newWord) {
-        wordBank.splice(index, 1);
+        const trimmedWord = newWord.trim().toUpperCase();
+        
+        // Validate not empty
+        if (!trimmedWord) {
+            alert('Word cannot be empty!');
+            return;
+        }
+        
+        // Validate only letters
+        if (!/^[A-Z]+$/.test(trimmedWord)) {
+            alert('Word must contain only letters!');
+            return;
+        }
+        
+        // Validate no duplicates (unless same word)
+        if (wordBank.includes(trimmedWord) && trimmedWord !== wordBank[index]) {
+            alert('This word already exists!');
+            return;
+        }
+        
+        // Replace word instead of deleting
+        wordBank[index] = trimmedWord;
         saveWordBank();
         displayWordBank();
     }
@@ -112,6 +145,7 @@ function editWord(index) {
 
 function deleteWord(index) {
     if (confirm('Are you sure you want to delete this word?')) {
+        wordBank.splice(index, 1);  // ADD THIS LINE
         saveWordBank();
         displayWordBank();
     }
@@ -151,6 +185,12 @@ function startGame() {
     
     document.getElementById('player1Display').textContent = gameState.player1.name;
     document.getElementById('player2Display').textContent = gameState.player2.name;
+
+    const difficultySettings = {
+        easy: { lives: 8, icon: '😊', name: 'Easy' },
+        medium: { lives: 6, icon: '😐', name: 'Medium' },
+        hard: { lives: 4, icon: '😤', name: 'Hard' }
+    };
     
     document.getElementById('gameArea').style.display = 'block';
     
