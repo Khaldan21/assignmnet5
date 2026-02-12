@@ -14,7 +14,8 @@ let gameState = {
     wrongGuesses: 0,
     maxWrong: 6,
     gameActive: false,
-    usedWords: []
+    usedWords: [],
+    difficulty: 'easy' // Default difficulty
 };
 
 let wordBank = [];
@@ -23,6 +24,17 @@ document.addEventListener('DOMContentLoaded', function() {
     loadWordBank();
     generateKeyboard();
 });
+
+function setDifficulty(level) {
+    gameState.difficulty = level;
+    gameState.maxWrong = difficultySettings[level].lives;
+    
+    // Update UI to show selected difficulty
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-difficulty="${level}"]`).classList.add('active');
+}
 
 function toggleTheme() {
     const themeIcon = document.querySelector('.theme-icon');
@@ -173,6 +185,12 @@ function startGame() {
     
     document.getElementById('player1Display').textContent = gameState.player1.name;
     document.getElementById('player2Display').textContent = gameState.player2.name;
+
+    const difficultySettings = {
+        easy: { lives: 8, icon: '😊', name: 'Easy' },
+        medium: { lives: 6, icon: '😐', name: 'Medium' },
+        hard: { lives: 4, icon: '😤', name: 'Hard' }
+    };
     
     document.getElementById('gameArea').style.display = 'block';
     
