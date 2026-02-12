@@ -57,7 +57,7 @@ function loadWordBank() {
 }
 
 function saveWordBank() {
-    localStorage.setItem('devopsWords', JSON.stringify(wordBank));
+    localStorage.setItem('wordBank', JSON.stringify(wordBank));
 }
 
 function displayWordBank() {
@@ -140,7 +140,7 @@ function startGame() {
         alert('Please enter names for both players!');
         return;
     }
-    
+
     if (p1Name === p2Name) {
         alert('Players must have different names!');
         return;
