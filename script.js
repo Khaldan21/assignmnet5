@@ -141,6 +141,11 @@ function startGame() {
         return;
     }
     
+    if (p1Name === p2Name) {
+        alert('Players must have different names!');
+        return;
+    }
+    
     gameState.player1.name = p1Name || 'Player 1';
     gameState.player2.name = p2Name || 'Player 2';
     
